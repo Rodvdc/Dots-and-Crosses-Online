@@ -69,7 +69,7 @@ class Main():
         SERVER = socket.gethostbyname(socket.gethostname())
         def next():
             PORT = int(port_input.get())
-            server_thread = threading.Thread(target = Server.Start, args = (SERVER, PORT))
+            server_thread = threading.Thread(target = Server.start, args = (SERVER, PORT))
             server_thread.start()
             time.sleep(0.1)
             self.start_game(SERVER, PORT)
@@ -113,7 +113,8 @@ class Main():
             continue
         if (self.Client.result == "YOU WON"):
             self.wins += 1
-        Server.server.close()
+        if (Server.server):
+            Server.server.close()
         self.reset()
         self.start()
 

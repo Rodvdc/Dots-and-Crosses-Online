@@ -14,37 +14,37 @@ client_lock = threading.Lock()
 
 server = ""
 
-Final_Res = ""
+final_res = ""
 msg = ""
-Player_Names = {}
-Nums = []
-Server_Grid = [[0, 0, 0],
+player_names = {}
+nums = []
+server_grid = [[0, 0, 0],
                [0, 0, 0],
                [0, 0, 0]]
-Count = 0
+count = 0
 
-def Var_Setup():
-    global clients, client_lock, server, Nums, Server_Grid, Count, Player_Names, Final_Res
+def var_setup():
+    global clients, client_lock, server, nums, server_grid, count, player_names, final_res
     clients = set()
     client_lock = threading.Lock()
 
     server = ""
-    Final_Res = ""
+    final_res = ""
 
     msg = ""
-    Player_Names = {}
-    Nums = ["1", "2"]
-    Server_Grid = [[0, 0, 0],
+    player_names = {}
+    nums = ["1", "2"]
+    server_grid = [[0, 0, 0],
                    [0, 0, 0],
                    [0, 0, 0]]
-    Count = 0
+    count = 0
 
 def handle_client(conn, addr, Num):
-    global Nums
+    global nums
     with client_lock:
         
         clients.add(conn)
-        Player_Names[addr] = "Player " + Num
+        player_names[addr] = "Player " + Num
     conn.send(("Pl" + Num).encode(FORMAT)) 
     
     connected = False
@@ -59,7 +59,7 @@ def handle_client(conn, addr, Num):
     threading.Thread(target = TimeOut).start()
     
     while not(connected) and not(BREAK):
-        if not(Nums):
+        if not(nums):
             conn.send(("S").encode(FORMAT))
             #for c in clients:
             #    c.sendall(("S").encode(FORMAT)) 
@@ -76,20 +76,20 @@ def handle_client(conn, addr, Num):
         if msg == DISCONNECT:
             connected = False
 
-            if not(Final_Res):
+            if not(final_res):
                 conn.close()
                 clients.remove(conn)
-                Player_Num = int(Player_Names[addr][-1])
-                print(Player_Num)
-                if Player_Num == 1:
-                    Send_Win(1)
+                player_num = int(player_names[addr][-1])
+                print(player_num)
+                if player_num == 1:
+                    send_win(1)
                 else:
-                    Send_Win(0)
+                    send_win(0)
                 break
             
         else:
-            if not(Final_Res):
-                Check(msg[0], msg[1], addr)
+            if not(final_res):
+                check(msg[0], msg[1], addr)
 
     try:
         for c in clients:
@@ -104,89 +104,88 @@ def handle_client(conn, addr, Num):
     #TODO Check why server closed don't print
 Wins = [["X", "X", "X"], ["O", "O", "O"]]
 
-def Check_Win(Posx, Posy, Sign):
-    global Server_Grid
-    Posx = int(Posx)
-    Posy = int(Posy)
-    Server_Grid[Posy][Posx] = Sign
-    SG = Server_Grid
-    if not(Final_Res):
+def check_win(pos_x, pos_y, sign):
+    global server_grid
+    pos_x = int(pos_x)
+    pos_y = int(pos_y)
+    server_grid[pos_y][pos_x] = sign
+    if not(final_res):
         for i in range(2):
             for r in range(3):
-                if SG[r] == Wins[i]:
-                    Send_Win(i)
+                if server_grid[r] == Wins[i]:
+                    send_win(i)
                     break
-                elif [str(SG[0][r]), str(SG[1][r]), str(SG[2][r])] == Wins[i]:
-                    Send_Win(i)
+                elif [str(server_grid[0][r]), str(server_grid[1][r]), str(server_grid[2][r])] == Wins[i]:
+                    send_win(i)
                     break
-            if [SG[0][0], SG[1][1], SG[2][2]] == Wins[i]:
-                Send_Win(i)
+            if [server_grid[0][0], server_grid[1][1], server_grid[2][2]] == Wins[i]:
+                send_win(i)
                 break
-            if [SG[0][2], SG[1][1], SG[2][0]] == Wins[i]:
-                Send_Win(i)
+            if [server_grid[0][2], server_grid[1][1], server_grid[2][0]] == Wins[i]:
+                send_win(i)
                 break
 
-        Total_Filled = 0
-        for row in SG:
+        total_filled = 0
+        for row in server_grid:
             for col in row:
                 if col:
-                    Total_Filled += 1
-        if Total_Filled == 9:
-            Send_Win("Both")
+                    total_filled += 1
+        if total_filled == 9:
+            send_win("Both")
 
-Final_Res = False
-def Send_Win(Winner):
-    global Final_Res
-    if not(Final_Res):
-        if Winner != "Both":
-            Winner += 1
-            TEXT = "WI" + str(Winner)
+final_res = False
+def send_win(winner):
+    global final_res
+    if not(final_res):
+        if winner != "Both":
+            winner += 1
+            TEXT = "WI" + str(winner)
         else:
             TEXT = "Dra"
         for c in clients:
             c.send(TEXT.encode(FORMAT))
-        print("WE HAVE WINNER", Winner)
-    Final_Res = True
+        print("WE HAVE WINNER", winner)
+    final_res = True
 
 
-def Check(Posx, Posy, addr):
-    Name = Player_Names[addr]
+def check(Posx, Posy, addr):
+    name = player_names[addr]
 
     def Send():
-        global Count
+        global count
         msg = str(Posx) + str(Posy)
         print("sending message:", msg)
 
         for c in clients:
             c.sendall((msg + Sign).encode(FORMAT))
-        Check_Win(Posx, Posy, Sign)
+        check_win(Posx, Posy, Sign)
         
-        Count += 1
-    if Count % 2 == 0 and Name == "Player 1":
+        count += 1
+    if count % 2 == 0 and name == "Player 1":
         Sign = "X"
         Send()
-    elif Count % 2 != 0 and Name == "Player 2":
+    elif count % 2 != 0 and name == "Player 2":
         Sign = "O"
         Send()
         
 
-def Start(SERVER, PORT):
-    global server, Nums
-    Var_Setup()
+def start(SERVER, PORT):
+    global server, nums
+    var_setup()
     ADDR = (SERVER, PORT)
     print(f"[{SERVER}] Server started")
     server  = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server.bind(ADDR)
     
     server.listen()
-    while Nums:
+    while nums:
         conn, addr = server.accept()
         print(f"[Listening] Server is waiting for players to join")
-        Num = str(random.choice(Nums))
-        Nums.remove(Num)
-        thread = threading.Thread(target = handle_client, args = (conn, addr, Num))
+        num = str(random.choice(nums))
+        nums.remove(num)
+        thread = threading.Thread(target = handle_client, args = (conn, addr, num))
         thread.start()
-        print(f"Player {Num} has joined")
+        print(f"Player {num} has joined")
     print("All players have joined")
 
 
