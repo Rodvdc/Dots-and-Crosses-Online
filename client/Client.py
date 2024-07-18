@@ -94,7 +94,6 @@ class Client():
         
             #Configure the window
             self.root.title("Dots and Crosses")
-            self.root.config(bg = "white")
             turn = Label(self.root, text = "Waiting for opponent...", font = FONT, bg = "white")
             turn.grid(row = 0, column = 0, columnspan = 3)
             for Row in range(3):
@@ -109,8 +108,10 @@ class Client():
             receive_thread = Thread(target = lambda: self.receive_pos(turn))
             receive_thread.start() 
 
-
+        except ConnectionRefusedError:
+            print("Connection refused, perhaps server does not exist")            
         except:
             print("Disconnecting...")
+        finally:
             self.disconnect()
         
