@@ -108,10 +108,9 @@ class Client():
             receive_thread = Thread(target = lambda: self.receive_pos(turn))
             receive_thread.start() 
 
-        except ConnectionRefusedError:
-            print("Connection refused, perhaps server does not exist")            
-        except:
+        except Exception as e:
+            if isinstance(e, ConnectionRefusedError):
+                print("Connection refused")
             print("Disconnecting...")
-        finally:
             self.disconnect()
         
