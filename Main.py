@@ -45,6 +45,7 @@ class Main():
         self.clear()
         self.root.resizable(width = False, height = False)
         self.root.title("Main Menu")
+        self.root.config(bg="white")
         self.PORT = ""
         self.SERVER = ""
 
@@ -59,10 +60,10 @@ class Main():
 
     def start(self):
         self.clear()
-        Label(self.root, bg = "red", text = "Xs and Os", font = FONT, width = 20, height = 2).grid(row = 0, column = 0)
-        Button(self.root, bg = "white", text = "Host and Play",font = FONT, width = 20, command = self.server_setup).grid(row = 1, column = 0)
-        Button(self.root, bg = "white", text = "Join game",font = FONT, width = 20, command = self.game_setup).grid(row = 2, column = 0)
-        Label(self.root, bg = "white", text = "Wins: " + str(self.wins), font = FONT, width = 20).grid(row = 3, column = 0)
+        Label(self.root, bg = "red", text = "Xs and Os", font = FONT, width = 21, padx=2, height = 2).grid(row = 0, column = 0)
+        Button(self.root, bg = "white", text = "Host and Play",font = FONT, width = 20, padx=10, pady=10, command = self.server_setup).grid(row = 1, column = 0)
+        Button(self.root, bg = "white", text = "Join game",font = FONT, width = 20, padx=10, pady=10, command = self.game_setup).grid(row = 2, column = 0)
+        Label(self.root, bg = "white", text = "Wins: " + str(self.wins), font = FONT, width = 20, pady=10).grid(row = 3, column = 0)
 
     def server_setup(self):
         self.clear()
@@ -76,12 +77,18 @@ class Main():
             
         Button(self.root, text = "< Back", font = ("Helvatica", 13), anchor = W, bg = "white", width = 35, padx = 3, fg = "red",  command = self.start).grid(row = 0, column = 0)
 
-        Label(self.root, bg = "white", width = 20, font = FONT, text = "Server IP: " + SERVER).grid(row = 1, column = 0)      
-        port_label = Label(self.root, bg = "white", width = 20, font = FONT, text = "Enter Server Port:").grid(row = 2, column = 0)
-        port_input = Entry(self.root, font = FONT, width = 21, justify = CENTER)
-        port_input.grid(row = 3, column = 0)
+        server_ip = Label(self.root, bg = "white", width = 20, font = FONT, text = "Server IP: " + SERVER)
+        server_ip.bind("<Button-1>", self.label_clicked)
+        server_ip.grid(row = 1, column = 0, pady=(10, 0))  
+        Label(self.root, bg = "white", width = 20, font = FONT, text = "Enter Server Port:").grid(row = 2, column = 0, pady=(10, 0))
+        port_input = Entry(self.root, font = FONT, width = 15, justify = CENTER)
+        port_input.grid(row = 3, column = 0, pady=(0, 20))
 
-        next_button = Button(self.root, bg = "white", text = "Next", font = FONT, width = 20, command = next).grid(row = 4, column = 0)
+        next_button = Button(self.root, bg = "white", text = "Next", font = FONT, width = 10, command = next).grid(row = 4, column = 0, pady=(0,10))
+
+    def label_clicked(self, event):
+        self.root.clipboard_append(event.widget.cget("text").replace("Server IP: ", ""))
+        self.root.update() 
 
     def game_setup(self):
         self.clear() 
@@ -92,15 +99,15 @@ class Main():
         
         Button(self.root, text = "< Back", font = ("Helvatica", 13), anchor = W, bg = "white", width = 35, padx = 3, fg = "red",  command = self.start).grid(row = 0, column = 0)
             
-        server_label = Label(self.root, bg = "white", width = 20, font = FONT, text = "Input IP of game:").grid(row = 1, column = 0)
-        server_input = Entry(self.root, width = 21, font = FONT, justify = CENTER)
+        Label(self.root, bg = "white", width = 20, font = FONT, text = "Input IP of game:").grid(row = 1, column = 0, pady=(10, 0))
+        server_input = Entry(self.root, width = 15, font = FONT, justify = CENTER)
         server_input.grid(row = 2, column = 0)
 
-        port_label = Label(self.root, bg = "white", width = 20, font = FONT, text = "Input port of game:").grid(row = 3, column = 0)
-        port_input = Entry(self.root, width = 21, font = FONT, justify = CENTER)
-        port_input.grid(row = 4, column = 0)
+        Label(self.root, bg = "white", width = 20, font = FONT, text = "Input port of game:").grid(row = 3, column = 0, pady=(10, 0))
+        port_input = Entry(self.root, width = 15, font = FONT, justify = CENTER)
+        port_input.grid(row = 4, column = 0, pady=(0, 20))
 
-        next_button = Button(self.root, text = "Next", font = FONT, bg = "white", width = 20, command = next).grid(row = 5, column = 0)
+        next_button = Button(self.root, bg = "white", text = "Next", font = FONT, width = 10, command = next).grid(row = 5, column = 0, pady=(0,10))
 
     def start_game(self, SERVER, PORT):
         self.clear()
