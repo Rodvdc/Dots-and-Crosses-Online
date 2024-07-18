@@ -51,12 +51,12 @@ def handle_client(conn, addr, Num):
     BREAK = False
     
     #TODO: what is this function
-    def TimeOut():
-        global BREAK
-        time.sleep(10)
-        return True
+    # def TimeOut():
+    #     global BREAK
+    #     time.sleep(10)
+    #     return True
 
-    threading.Thread(target = TimeOut).start()
+    # threading.Thread(target = TimeOut).start()
     
     while not(connected) and not(BREAK):
         if not(nums):
@@ -187,6 +187,3 @@ def start(SERVER, PORT):
         thread.start()
         print(f"Player {num} has joined")
     print("All players have joined")
-
-
-#Start()
