@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 import socket
 from threading import Thread
 
@@ -109,8 +110,14 @@ class Client():
             receive_thread.start() 
 
         except Exception as e:
+            tryAgain = False
             if isinstance(e, ConnectionRefusedError):
                 print("Connection refused")
-            print("Disconnecting...")
-            self.disconnect()
+                tryAgain = messagebox.askretrycancel("Connection Refused", "Game not available")
+            
+            if (not tryAgain):
+                print("Disconnecting...")
+                self.disconnect()
+            else:
+                self.generate_game(SERVER, PORT)
         
