@@ -50,14 +50,6 @@ def handle_client(conn, addr, Num):
     connected = False
     BREAK = False
     
-    #TODO: what is this function
-    # def TimeOut():
-    #     global BREAK
-    #     time.sleep(10)
-    #     return True
-
-    # threading.Thread(target = TimeOut).start()
-    
     while not(connected) and not(BREAK):
         if not(nums):
             conn.send(("S").encode(FORMAT))
@@ -101,7 +93,7 @@ def handle_client(conn, addr, Num):
     global server
     server.close()
     print("Server closed!")
-    #TODO Check why server closed don't print
+
 Wins = [["X", "X", "X"], ["O", "O", "O"]]
 
 def check_win(pos_x, pos_y, sign):

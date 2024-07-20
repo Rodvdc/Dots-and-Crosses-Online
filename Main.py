@@ -17,7 +17,6 @@ INPROGRESS = "inprogress"
 DONE = "done"
 
 #TODO when pressing quit and hosting - should close the server
-#TODO make sure you don't get stuck when joining a server that does not exist
 
 class Main():
     def __init__(self):
@@ -41,7 +40,6 @@ class Main():
             self.wins += 1
 
     def reset(self):
-        #self.root = Tk()
         self.clear()
         self.root.resizable(width = False, height = False)
         self.root.title("Main Menu")

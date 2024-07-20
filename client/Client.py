@@ -31,9 +31,6 @@ class Client():
         except:
             pass
         self.progress = DONE
-        #self.root.destroy()
-        #TODO: send result to main
-        #TODO later set to main menu
 
     def receive_pos(self, turn):
         self.start = self.client.recv(1).decode(FORMAT)
@@ -120,4 +117,3 @@ class Client():
                 self.disconnect()
             else:
                 self.generate_game(SERVER, PORT)
-        
